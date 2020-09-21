@@ -11,14 +11,14 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env(
-    'DJANGO_SECRET_KEY', '&pknbytask*u)v&(i86_9iir%0m25zu33*--c7sq9-8-=8ka#9'
-)
+SECRET_KEY = get_env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = get_env('DJANGO_DEBUG', 1)
 
 ALLOWED_HOSTS = []
+
+# TODO: Add security settings
 
 
 # Application definition
@@ -69,6 +69,8 @@ WSGI_APPLICATION = 'djshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+
+# TODO: change DB to postgres
 
 DATABASES = {
     'default': {
