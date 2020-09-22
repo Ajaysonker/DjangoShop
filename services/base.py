@@ -2,6 +2,8 @@ from abc import ABC
 
 from django.core.exceptions import ImproperlyConfigured
 
+from .strategies import SimpleCRUDStrategy
+
 
 class BaseCRUDService(ABC):
     """Base class with CRUD functionality
@@ -28,16 +30,18 @@ class BaseCRUDService(ABC):
 
     """
 
-    crud_strategy = None
+    crud_strategy = SimpleCRUDStrategy
     model = None
+    form = None
 
     def __init__(self) -> None:
-        if not self.crud_strategy or not self.model:
+        if not all((self.model, self.form)):
             raise ImproperlyConfigured(
-                f"You need to set `crud_strategy` and `model` attributes"
+                f"You need to set `crud_strategy`, `model`"
+                "and `form` attributes"
             )
 
-        self._strategy = self.crud_strategy(self.model)
+        self._strategy = self.crud_strategy(self.model, self.form)
 
     def get_concrete(self, *args, **kwargs):
         """Return a concrete entry"""
