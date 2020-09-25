@@ -1,7 +1,9 @@
+from __future__ import annotations
 from uuid import UUID
 from typing import Any
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Model
+from django.forms import Form
 
 from services import BaseCRUDService
 from ..models import Product
@@ -23,11 +25,11 @@ class ProductService(BaseCRUDService):
 
     Methods
     -------
-    get_reviews(pk)
+    get_reviews(product_pk)
         Return reviews of product
-    add_review(pk, **data)
+    add_review(product_pk, **data)
         Add new review for product
-    remove_review(pk)
+    remove_review(review_pk)
         Remove a review
 
     """
@@ -36,19 +38,19 @@ class ProductService(BaseCRUDService):
     form = ProductForm
     review_service = ReviewService()
 
-    def get_reviews(self, pk: UUID) -> QuerySet:
-        """Return reviews of product with pk"""
-        product = self.get_concrete(pk)
+    def get_reviews(self, product_pk: UUID) -> QuerySet:
+        """Return reviews of product with product_pk"""
+        product = self.get_concrete(product_pk)
         reviews = product.reviews.all()
         return reviews
 
-    def add_review(self, pk: UUID, **data) -> Any[Form, Model]:
-        """Add new review for product with pk"""
-        product = self.get_concrete(pk)
-        review = self.review_service.create(product=product, **data)
-        return review
+    def add_review(self, product_pk: UUID, **data) -> Any[Form, Model]:
+        """Add new review for product with product_pk"""
+        product = self.get_concrete(product_pk)
+        response = self.review_service.create(product=product, **data)
+        return response
 
-    def remove_review(self, pk: UUID) -> None:
+    def remove_review(self, review_pk: UUID) -> None:
         """Remove a review with pk"""
-        self.review_service.delete(pk)
+        self.review_service.delete(review_pk)
 
