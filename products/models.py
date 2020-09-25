@@ -33,7 +33,9 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    seller = models.ForeignKey(User, on_delete=models.CASCADE)
+    seller = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='products'
+    )
     pub_date = models.DateField(auto_now_add=True)
 
     def __str__(self) -> str:
@@ -64,11 +66,15 @@ class Review(models.Model):
         primary_key=True, editable=False, default=uuid.uuid4
     )
     text = models.TextField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='reviews'
+    )
     rating = models.PositiveIntegerField(
         validators=[MaxValueValidator(5)]
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='reviews'
+    )
     pub_date = models.DateField(auto_now_add=True)
 
     def __str__(self) -> str:
