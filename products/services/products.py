@@ -51,6 +51,6 @@ class ProductService(BaseCRUDService):
         return response
 
     def remove_review(self, review_pk: UUID) -> None:
-        """Remove a review with pk"""
+        """Remove a review with review_pk"""
         self.review_service.delete(review_pk)
 
