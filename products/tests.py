@@ -1,9 +1,11 @@
 # TODO: Create tests for ProductService
-from django.test import TestCase
-from django.contrib.auth import get_user_model
 from decimal import Decimal
 
-from .models import Product
+from django.test import TestCase
+from django.contrib.auth import get_user_model
+from django.db.models import Model
+
+from .models import Product, Review
 from .services.products import ProductService
 
 
@@ -20,6 +22,10 @@ class ProductServiceTests(TestCase):
         self.product = Product.objects.create(
             title='test', description='test desc',
             price='100.00', seller=self.user
+        )
+        self.review = Review.objects.create(
+            text='test_review', product=self.product,
+            rating=5, author=self.user
         )
 
     def test_get_concrete(self):
@@ -59,4 +65,25 @@ class ProductServiceTests(TestCase):
         self.service.delete(self.product.pk)
         all_products = self.service.get_all()
         self.assertEqual(len(all_products), 0)
+
+    def test_get_review(self):
+        reviews = self.service.get_reviews(self.product.pk)
+        self.assertEqual(len(reviews), 1)
+        self.assertEqual(reviews[0], self.review)
+
+    def test_add_review(self):
+        new_review = self.service.add_review(
+            self.product.pk, text="new_review",
+            rating=5, author=self.user
+        )
+        self.assertIsInstance(new_review, Model)
+        self.assertEqual(new_review.text, "new_review")
+        self.assertEqual(new_review.product, self.product)
+        self.assertEqual(new_review.rating, 5)
+        self.assertEqual(new_review.author, self.user)
+
+    def test_remove_review(self):
+        self.service.remove_review(self.review.pk)
+        all_reviews = self.service.get_reviews(self.product.pk)
+        self.assertEqual(len(all_reviews), 0)
 

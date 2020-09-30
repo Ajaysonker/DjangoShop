@@ -94,8 +94,11 @@ class SimpleCRUDStrategy(BaseCRUDStrategy):
             field.name for field in self._model._meta.get_fields()
             if field.editable
         ]
-        if list(data.keys()) != fields:
-            raise ValueError(f"Data is incorrect")
+        if list(data.keys()).sort() != fields.sort():
+            raise ValueError(
+                f"Data is incorrect: {list(data.keys()).sort()} "
+                "!= {fields.sort(0)}"
+            )
 
     def update(self, pk: UUID, **data) -> Any[Model, Form]:
         """Update a concrete entry with pk from data"""
